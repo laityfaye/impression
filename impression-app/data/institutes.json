@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ufr-sante",
+    "name": "UFR Santé - Université de Thiès",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "isa",
+    "name": "ISA - Institut Supérieur des Arts",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "esp-thies",
+    "name": "ESP Thiès - École Supérieure Polytechnique",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "nsup",
+    "name": "NSUP",
+    "createdAt": "2026-02-19T01:47:59.794Z"
+  }
+]
