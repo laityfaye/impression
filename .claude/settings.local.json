@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(npm:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd.exe /c \"taskkill /PID 20716 /F\")",
+      "Bash(cmd.exe /c \"taskkill /IM node.exe /F\")",
+      "Bash(cmd.exe /c \"rd /S /Q \"\"c:\\\\Users\\\\laity\\\\Desktop\\\\projet\\\\Impression\\\\impression-app\\\\.next\\\\dev\"\"\")",
+      "Bash(cmd /c \"taskkill /PID 384 /F\")",
+      "Bash(cmd /c:*)",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host ''Done''\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, Name\")",
+      "Bash(powershell -Command \"Remove-Item ''c:\\\\Users\\\\laity\\\\Desktop\\\\projet\\\\Impression\\\\impression-app\\\\.next\\\\dev\\\\lock'' -Force -ErrorAction SilentlyContinue; Write-Host ''Done''\")",
+      "Bash(powershell -Command \"Get-ChildItem ''c:\\\\Users\\\\laity\\\\Desktop\\\\projet\\\\Impression\\\\impression-app\\\\public'' | Select-Object Name\")",
+      "Bash(powershell -Command:*)",
+      "Bash(dir:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app\\.next\\dev",
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app\\app\\api\\orders",
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app\\app\\api\\institutes",
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app",
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app\\app\\admin\\login",
+      "c:\\Users\\laity\\Desktop\\projet\\Impression\\impression-app\\app\\admin"
+    ]
+  }
+}
