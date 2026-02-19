@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Printer,
@@ -20,7 +20,9 @@ import {
   ArrowLeft,
   Eye,
   Download,
+  QrCode,
 } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 interface Institute {
   id: string;
@@ -103,6 +105,21 @@ export default function SuperAdminDashboard() {
   const [deletingOrder, setDeletingOrder] = useState<string | null>(null);
   const [confirmInstitute, setConfirmInstitute] = useState<string | null>(null);
   const [confirmOrder, setConfirmOrder] = useState<string | null>(null);
+  const [platformUrl, setPlatformUrl] = useState('');
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') setPlatformUrl(window.location.origin);
+  }, []);
+
+  const downloadQrPng = () => {
+    const canvas = qrRef.current?.querySelector('canvas');
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = 'uidt-impression-qr.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -261,6 +278,49 @@ export default function SuperAdminDashboard() {
           <StatCard icon={<TrendingUp className="w-5 h-5" />} label="Chiffre d'affaires" value={formatPrice(totalRevenue)} color="green" />
           <StatCard icon={<Building2 className="w-5 h-5" />} label="Instituts partenaires" value={institutes.length.toString()} color="purple" />
         </div>
+
+        {/* QR code d'accès à la plateforme */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+            <div className="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center">
+              <QrCode className="w-5 h-5 text-indigo-700" />
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-900">QR code d&apos;accès à la plateforme</h2>
+              <p className="text-xs text-gray-500">Scannez pour ouvrir UIDT Impression sur mobile</p>
+            </div>
+          </div>
+          <div className="p-6 flex flex-col sm:flex-row items-center gap-6">
+            <div ref={qrRef} className="flex-shrink-0 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+              {platformUrl ? (
+                <QRCodeCanvas value={platformUrl} size={180} level="M" includeMargin />
+              ) : (
+                <div className="w-[180px] h-[180px] bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0 space-y-3">
+              <p className="text-sm text-gray-600">
+                Affichez ce QR code (impression ou écran) pour permettre aux utilisateurs d&apos;accéder rapidement à la plateforme en scannant avec leur téléphone.
+              </p>
+              {platformUrl && (
+                <p className="text-xs font-mono text-gray-500 bg-gray-50 px-3 py-2 rounded-lg break-all">
+                  {platformUrl}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={downloadQrPng}
+                disabled={!platformUrl}
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Télécharger en PNG
+              </button>
+            </div>
+          </div>
+        </section>
 
         {/* Institutes section */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
