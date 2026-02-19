@@ -108,12 +108,13 @@ Créer ou éditer un vhost, par exemple :
 sudo nano /etc/nginx/sites-available/imp.innosft.com
 ```
 
-Contenu type :
+Contenu type (avec limite d’upload augmentée pour les PDF/Word) :
 
 ```nginx
 server {
     listen 80;
     server_name imp.innosft.com;
+    client_max_body_size 50M;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
