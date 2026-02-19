@@ -149,7 +149,20 @@ Suivre les instructions. Certbot mettra à jour la config Nginx pour le HTTPS.
 
 ---
 
-## 6. DNS
+## 6. Référencement (SEO)
+
+Le site est configuré pour les recherches « UIDT impression », « InnoSoft impression », etc. :
+
+- **Métadonnées** : titre, description, mots-clés, Open Graph, Twitter Card.
+- **JSON-LD** : données structurées (WebSite, Organization) pour les moteurs de recherche.
+- **Sitemap** : `https://imp.innosft.com/sitemap.xml`
+- **robots.txt** : `https://imp.innosft.com/robots.txt`
+
+Pour accélérer l’indexation : [Google Search Console](https://search.google.com/search-console) → ajouter la propriété `imp.innosft.com` → Sitemaps → soumettre l’URL du sitemap. Définir `NEXT_PUBLIC_SITE_URL=https://imp.innosft.com` dans `.env.local` en production pour que les URLs absolues soient correctes.
+
+---
+
+## 7. DNS
 
 Dans le panneau Hostinger (ou votre gestionnaire DNS), créer un enregistrement pour le sous-domaine :
 
@@ -161,14 +174,14 @@ Attendre la propagation DNS (quelques minutes à quelques heures).
 
 ---
 
-## 7. Vérification
+## 8. Vérification
 
 1. **Sur le serveur** : `curl http://127.0.0.1:3000` doit renvoyer la page d’accueil.
 2. **Depuis l’extérieur** : ouvrir https://imp.innosft.com dans un navigateur.
 
 ---
 
-## 8. Mise à jour après modification du code
+## 9. Mise à jour après modification du code
 
 ```bash
 cd ~/impression
