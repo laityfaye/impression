@@ -38,55 +38,18 @@ npm install -g pm2
 
 ## 2. Déployer l’application
 
-Structure attendue après clonage : dépôt dans `~/impression/`, app Next.js dans `~/impression/impression-app/` (avec `package.json` à l’intérieur).
+Structure après clonage : dépôt dans `~/impression/`, app Next.js dans `~/impression/impression-app/`. Tous les fichiers sont dans le dépôt (plus de sous-module).
 
-### Si `package.json` est introuvable dans `impression-app`
-
-Sur le serveur, vérifier où se trouve l’app :
-
-```bash
-find ~/impression -name "package.json"
-ls -la ~/impression/
-ls -la ~/impression/impression-app/
-```
-
-- **Si `package.json` est dans `~/impression/impression-app/`** : le clone est correct, poursuivre avec les commandes ci‑dessous depuis `~/impression/impression-app`.
-- **Si `package.json` est dans `~/impression/`** (racine du clone) : l’app est à la racine. Utiliser `~/impression` comme dossier de l’app (voir encadré plus bas).
-- **Si aucun `package.json` n’apparaît** : le contenu de `impression-app` n’a peut‑être pas été poussé. Depuis votre machine, vérifier que les fichiers sont bien commités et poussés :
-  ```bash
-  cd chemin/vers/Impression
-  git status
-  git add impression-app/
-  git commit -m "Add impression-app content"
-  git push
-  ```
-  Puis sur le serveur : `cd ~/impression && git pull`.
-
-### Option A : Déploiement depuis votre machine
-
-Sur votre machine locale, build puis transférer le projet sur le serveur (ex. avec `scp` ou `rsync` en ciblant `~/impression/`).
-
-### Option B : Déploiement sur le serveur (app dans `impression-app`)
-
-```bash
-cd ~/impression/impression-app
-
-npm install
-npm run build
-```
-
-### Option Bbis : App à la racine du clone (`~/impression/package.json`)
-
-Si `package.json` est dans `~/impression/` :
+### Déploiement sur le serveur (après git clone)
 
 ```bash
 cd ~/impression
+git pull
+cd impression-app
 
 npm install
 npm run build
 ```
-
-Pour PM2, lancer depuis `~/impression` avec le fichier `ecosystem.config.cjs` à la racine du dépôt (voir section 4).
 
 ---
 
@@ -232,8 +195,8 @@ pm2 restart impression-app
 ## Résumé des chemins (structure après git clone)
 
 - **Dépôt** : `~/impression/`
-- **App Next.js** : `~/impression/impression-app/` (ou `~/impression/` si `package.json` est à la racine)
+- **App Next.js** : `~/impression/impression-app/`
 - **Port app** : 3000
 - **Domaine** : imp.innosft.com
-- **Fichier PM2** : `~/impression/impression-app/ecosystem.config.cjs` ou `~/impression/ecosystem.config.cjs` si l’app est à la racine
-- **Variables d’env** : `.env.local` dans le dossier où se trouve `package.json`
+- **Fichier PM2** : `~/impression/impression-app/ecosystem.config.cjs`
+- **Variables d’env** : `~/impression/impression-app/.env.local`
