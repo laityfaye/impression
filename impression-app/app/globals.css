@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Chemins pour Tailwind v4 (scan des classes utilisées en production) */
+@source "../components";
+@source "../lib";
+@source "../types";
+
 :root {
   --background: #ffffff;
   --foreground: #111827;

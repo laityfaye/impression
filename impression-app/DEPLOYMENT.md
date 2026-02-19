@@ -187,6 +187,7 @@ pm2 restart impression-app
 | Problème | Piste de solution |
 |----------|-------------------|
 | 502 Bad Gateway | Vérifier que l’app tourne : `pm2 status` et `pm2 logs impression-app`. Vérifier le port dans Nginx (3000). |
+| **Styles CSS ne s’affichent pas** (page sans mise en forme) | 1) Rebuild : `cd ~/impression/impression-app && npm run build && pm2 restart impression-app`. 2) Vérifier que Nginx proxy bien tout : le bloc `location /` doit inclure `/_next/` (pas de `location` dédiée qui bloquerait). 3) Vider le cache du navigateur (Ctrl+Shift+Suppr) ou tester en navigation privée. 4) Vérifier que les requêtes `/_next/static/...` renvoient 200 (onglet Réseau des DevTools). |
 | Page blanche / erreur | Consulter les logs : `pm2 logs impression-app`, et les logs Nginx : `sudo tail -f /var/log/nginx/error.log`. |
 | Erreur au build | Vérifier Node.js >= 20, `npm install` puis `npm run build`. Vérifier les erreurs affichées. |
 | Connexion refusée sur le port 3000 | Vérifier le pare-feu (ports 80/443 ouverts, 3000 peut rester en localhost). |

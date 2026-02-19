@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     icon: '/finitions/INNOSOFT.png',
     apple: '/finitions/INNOSOFT.png',
   },
+  viewport: 'width=device-width, initial-scale=1',
 };
 
 export default function RootLayout({
