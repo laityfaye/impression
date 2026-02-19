@@ -2,8 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { Search } from 'lucide-react';
+import { Search, Printer } from 'lucide-react';
 import { STEPS } from '@/types/order';
 import { cn } from '@/lib/utils';
 
@@ -26,14 +25,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <Image
-                src="/finitions/INNOSOFT.png"
-                alt="UIDT Impression - InnoSoft"
-                width={140}
-                height={40}
-                className="h-8 w-auto object-contain"
-                priority
-              />
+              <div className="w-8 h-8 bg-white/20 border border-white/30 rounded-lg flex items-center justify-center">
+                <Printer className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-black text-white text-sm sm:text-base tracking-tight whitespace-nowrap">
+                UIDT<span className="text-blue-200">Impression</span>
+              </span>
             </Link>
 
             {/* Steps — masqués sur /suivi */}
