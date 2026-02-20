@@ -386,6 +386,7 @@ export default function AdminDashboard() {
                 <thead className="sticky top-0 z-10 bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">N°</th>
+                    <th className="px-5 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-14">Ex.</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Client</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Document</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Finition</th>
@@ -406,6 +407,13 @@ export default function AdminDashboard() {
                         <td className="px-5 py-4">
                           <span className="text-xs font-mono font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1.5 rounded-lg whitespace-nowrap ring-1 ring-indigo-100">
                             #{order.orderNumber}
+                          </span>
+                        </td>
+
+                        {/* Exemplaires */}
+                        <td className="px-5 py-4 text-center">
+                          <span className="inline-flex items-center justify-center min-w-[2rem] text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded-lg">
+                            {order.copies ?? 1}
                           </span>
                         </td>
 
@@ -439,9 +447,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm text-gray-700 font-medium truncate max-w-[130px]">{order.document.name}</p>
-                              <p className="text-xs text-gray-400">
-                                {order.document.pageCount} pages · {order.copies ?? 1} ex.
-                              </p>
+                              <p className="text-xs text-gray-400">{order.document.pageCount} pages</p>
                               {order.document.savedFileName && (
                                 <div className="flex items-center gap-1.5 mt-1.5">
                                   <a
@@ -564,6 +570,7 @@ function SkeletonRows() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="px-5 py-4 flex items-center gap-4 animate-pulse">
           <div className="w-20 h-7 bg-gray-100 rounded-lg" />
+          <div className="w-10 h-7 bg-gray-100 rounded-lg flex-shrink-0" />
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <div className="w-9 h-9 bg-gray-100 rounded-full flex-shrink-0" />
             <div className="space-y-2 min-w-0">

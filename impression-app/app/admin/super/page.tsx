@@ -454,6 +454,7 @@ export default function SuperAdminDashboard() {
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">N°</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase w-14">Ex.</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Client</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase hidden md:table-cell">Document</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase hidden lg:table-cell">Finition</th>
@@ -472,6 +473,11 @@ export default function SuperAdminDashboard() {
                         <td className="px-4 py-4">
                           <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg">#{order.orderNumber}</span>
                         </td>
+                        <td className="px-4 py-4 text-center">
+                          <span className="inline-flex items-center justify-center min-w-[2rem] text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded-lg">
+                            {order.copies ?? 1}
+                          </span>
+                        </td>
                         <td className="px-4 py-4">
                           {order.client ? (
                             <div>
@@ -485,9 +491,7 @@ export default function SuperAdminDashboard() {
                             <FileText className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
                             <div className="min-w-0">
                               <p className="text-sm text-gray-700 truncate max-w-[140px]">{order.document.name}</p>
-                              <p className="text-xs text-gray-500 mb-1.5">
-                                {order.document.pageCount} pages · {order.copies ?? 1} ex.
-                              </p>
+                              <p className="text-xs text-gray-500 mb-1.5">{order.document.pageCount} pages</p>
                               {order.document.savedFileName && (
                                 <div className="flex items-center gap-1">
                                   <a
