@@ -80,7 +80,7 @@ export function DeliveryOptionsComponent({ selected, selectedInstitute, onSelect
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-48 overflow-y-auto">
                     {institutes.map((institute) => (
                       <button
                         key={institute.id}
