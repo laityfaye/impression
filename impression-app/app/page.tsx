@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Printer, Upload, MapPin } from 'lucide-react';
 import { DocumentUploader } from '@/components/DocumentUploader';
 import { useOrderStore } from '@/lib/store';
-import { PARTNER_INSTITUTES } from '@/types/order';
+import { useInstitutes } from '@/lib/useInstitutes';
 
 const features = [
   { emoji: '🛡️', label: 'Sécurisé',     desc: 'Fichiers supprimés après impression' },
@@ -28,6 +28,7 @@ const pills = [
 
 export default function UploadPage() {
   const { resetOrder } = useOrderStore();
+  const institutes = useInstitutes();
 
   useEffect(() => {
     resetOrder();
@@ -196,7 +197,7 @@ export default function UploadPage() {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            {PARTNER_INSTITUTES.map((inst) => (
+            {institutes.map((inst) => (
               <div
                 key={inst.id}
                 className="flex flex-col items-center gap-2 sm:gap-2.5 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-200 text-center hover:border-blue-200 hover:shadow-sm transition-all"
