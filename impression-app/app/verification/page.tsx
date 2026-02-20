@@ -79,10 +79,10 @@ export default function VerificationPage() {
           </div>
         </div>
 
-        <div className="flex gap-6 items-stretch">
+        <div className="flex flex-col gap-6 md:flex-row md:items-stretch">
 
           {/* Pricing Card */}
-          <div className="w-72 flex-shrink-0">
+          <div className="w-full md:w-72 md:flex-shrink-0">
             <PricingCard pageCount={document.pageCount} fileName={document.name} />
           </div>
 
