@@ -486,8 +486,7 @@ export default function SuperAdminDashboard() {
                             <div className="min-w-0">
                               <p className="text-sm text-gray-700 truncate max-w-[140px]">{order.document.name}</p>
                               <p className="text-xs text-gray-500 mb-1.5">
-                                {order.document.pageCount} pages
-                                {(order.copies ?? 1) > 1 && <span> · {order.copies} ex.</span>}
+                                {order.document.pageCount} pages · {order.copies ?? 1} ex.
                               </p>
                               {order.document.savedFileName && (
                                 <div className="flex items-center gap-1">
