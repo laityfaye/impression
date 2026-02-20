@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Printer, Upload, MapPin } from 'lucide-react';
 import { DocumentUploader } from '@/components/DocumentUploader';
 import { useOrderStore } from '@/lib/store';
+import { PARTNER_INSTITUTES } from '@/types/order';
 
 const features = [
   { emoji: '🛡️', label: 'Sécurisé',     desc: 'Fichiers supprimés après impression' },
@@ -186,7 +187,7 @@ export default function UploadPage() {
         <div className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <p className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">
-              Instituts partenaires
+              Livraison gratuite dans les instituts suivants
             </p>
             <div className="flex items-center gap-1.5 text-gray-400 text-xs">
               <MapPin className="w-3 h-3" />
@@ -195,15 +196,15 @@ export default function UploadPage() {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            {['UFR Santé', 'ISA', 'ESP Thiès'].map((name) => (
+            {PARTNER_INSTITUTES.map((inst) => (
               <div
-                key={name}
+                key={inst.id}
                 className="flex flex-col items-center gap-2 sm:gap-2.5 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-200 text-center hover:border-blue-200 hover:shadow-sm transition-all"
               >
                 <div className="w-8 h-8 sm:w-9 sm:h-9 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
                   <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
-                <p className="text-[11px] sm:text-xs font-bold text-gray-700 leading-snug">{name}</p>
+                <p className="text-[11px] sm:text-xs font-bold text-gray-700 leading-snug">{inst.name}</p>
               </div>
             ))}
           </div>
