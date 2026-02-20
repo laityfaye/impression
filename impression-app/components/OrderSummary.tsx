@@ -19,9 +19,10 @@ interface SummaryRow {
 }
 
 export function OrderSummary() {
-  const { document, finishing, correctionService, delivery, selectedInstitute, totalPrice } =
+  const { document, finishing, correctionService, delivery, selectedInstitute, totalPrice, copies } =
     useOrderStore();
   const institutes = useInstitutes();
+  const exemplaires = Math.max(1, copies ?? 1);
 
   if (!document) return null;
 
@@ -31,24 +32,24 @@ export function OrderSummary() {
 
   const rows: SummaryRow[] = [
     {
-      label: 'Impression',
-      value: formatPrice(printingCost),
+      label: exemplaires > 1 ? `Impression (${exemplaires} exemplaires)` : 'Impression',
+      value: formatPrice(printingCost * exemplaires),
       icon: <FileText className="w-4 h-4" />,
     },
   ];
 
   if (finishing && finishingOption) {
     rows.push({
-      label: `Finition – ${finishingOption.name}`,
-      value: `+${formatPrice(FINISHING_PRICES[finishing])}`,
+      label: exemplaires > 1 ? `Finition – ${finishingOption.name} (×${exemplaires})` : `Finition – ${finishingOption.name}`,
+      value: `+${formatPrice(FINISHING_PRICES[finishing] * exemplaires)}`,
       icon: <Package className="w-4 h-4" />,
     });
   }
 
   if (correctionService) {
     rows.push({
-      label: 'Correction de mise en page',
-      value: `+${formatPrice(CORRECTION_SERVICE_PRICE)}`,
+      label: exemplaires > 1 ? `Correction de mise en page (×${exemplaires})` : 'Correction de mise en page',
+      value: `+${formatPrice(CORRECTION_SERVICE_PRICE * exemplaires)}`,
       icon: <Wrench className="w-4 h-4" />,
     });
   }
@@ -70,7 +71,10 @@ export function OrderSummary() {
           <div className="flex-1 min-w-0">
             <p className="text-xs text-blue-200 mb-0.5">Document</p>
             <p className="font-semibold truncate">{document.name}</p>
-            <p className="text-sm text-blue-200">{document.pageCount} pages</p>
+            <p className="text-sm text-blue-200">
+              {document.pageCount} pages
+              {exemplaires > 1 && <span> · {exemplaires} exemplaires</span>}
+            </p>
           </div>
         </div>
       </div>

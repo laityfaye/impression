@@ -39,6 +39,7 @@ interface StoredOrder {
   finishing: string | null;
   delivery: string | null;
   selectedInstitute: string | null;
+  copies?: number;
   totalPrice: number;
   status: OrderStatus;
   createdAt: string;
@@ -438,7 +439,10 @@ export default function AdminDashboard() {
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm text-gray-700 font-medium truncate max-w-[130px]">{order.document.name}</p>
-                              <p className="text-xs text-gray-400">{order.document.pageCount} pages</p>
+                              <p className="text-xs text-gray-400">
+                                {order.document.pageCount} pages
+                                {(order.copies ?? 1) > 1 && <span> · {order.copies} ex.</span>}
+                              </p>
                               {order.document.savedFileName && (
                                 <div className="flex items-center gap-1.5 mt-1.5">
                                   <a

@@ -36,7 +36,7 @@ export default function RecapitulatifPage() {
     setIsSubmitting(true);
     const num = generateOrderNumber();
     try {
-      const { correctionService, finishing, delivery, selectedInstitute, totalPrice, client } =
+      const { correctionService, finishing, delivery, selectedInstitute, totalPrice, client, copies } =
         useOrderStore.getState();
       await fetch('/api/orders', {
         method: 'POST',
@@ -49,6 +49,7 @@ export default function RecapitulatifPage() {
           finishing,
           delivery,
           selectedInstitute,
+          copies: copies ?? 1,
           totalPrice,
         }),
       });

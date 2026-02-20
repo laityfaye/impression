@@ -69,6 +69,7 @@ export interface StoredOrder {
   finishing: string | null;
   delivery: string | null;
   selectedInstitute: string | null;
+  copies?: number;
   totalPrice: number;
   status: OrderStatus;
   createdAt: string;

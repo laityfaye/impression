@@ -28,7 +28,7 @@ export function DeliveryOptionsComponent({ selected, selectedInstitute, onSelect
         onClick={() => onSelect('partner', selectedInstitute)}
         onKeyDown={(e) => e.key === 'Enter' && onSelect('partner', selectedInstitute)}
         className={cn(
-          'w-full flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer select-none',
+          'press-feedback w-full flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer select-none',
           selected === 'partner'
             ? 'border-blue-700 bg-blue-50 shadow-md shadow-blue-100'
             : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30'
@@ -124,7 +124,7 @@ export function DeliveryOptionsComponent({ selected, selectedInstitute, onSelect
         onClick={() => onSelect('other', null)}
         onKeyDown={(e) => e.key === 'Enter' && onSelect('other', null)}
         className={cn(
-          'w-full flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer select-none',
+          'press-feedback w-full flex items-start gap-4 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer select-none',
           selected === 'other'
             ? 'border-blue-700 bg-blue-50 shadow-md shadow-blue-100'
             : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30'

@@ -15,6 +15,7 @@ interface OrderState {
   delivery: DeliveryType;
   selectedInstitute: string | null;
   client: ClientInfo | null;
+  copies: number;
   totalPrice: number;
 
   // Actions
@@ -22,6 +23,7 @@ interface OrderState {
   setCorrectionService: (value: boolean) => void;
   setFinishing: (option: FinishingOption) => void;
   setDelivery: (type: DeliveryType, institute?: string | null, client?: ClientInfo) => void;
+  setCopies: (n: number) => void;
   resetOrder: () => void;
   recalculateTotal: () => void;
 }
@@ -33,6 +35,7 @@ const initialState = {
   delivery: null as DeliveryType,
   selectedInstitute: null,
   client: null as ClientInfo | null,
+  copies: 1,
   totalPrice: 0,
 };
 
@@ -60,15 +63,22 @@ export const useOrderStore = create<OrderState>()(
         set({ delivery: type, selectedInstitute: institute, client: client ?? null });
       },
 
+      setCopies: (n: number) => {
+        const copies = Math.max(1, Math.min(99, Math.floor(n)));
+        set({ copies });
+        get().recalculateTotal();
+      },
+
       resetOrder: () => {
         set(initialState);
       },
 
       recalculateTotal: () => {
         const { document, finishing, correctionService } = get();
+        const copies = get().copies ?? 1;
         if (!document) return;
-        const total = calculateTotal(document.pageCount, finishing, correctionService);
-        set({ totalPrice: total });
+        const unitTotal = calculateTotal(document.pageCount, finishing, correctionService);
+        set({ totalPrice: unitTotal * Math.max(1, copies) });
       },
     }),
     {

@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Truck, AlertCircle, User, Phone } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Truck, AlertCircle, User, Phone, Copy } from 'lucide-react';
 import { useOrderStore, ClientInfo } from '@/lib/store';
 import { DeliveryOptionsComponent } from '@/components/DeliveryOptions';
 import { DeliveryType } from '@/types/order';
 import { cn } from '@/lib/utils';
 
+const EXEMPLAIRES_OPTIONS = Array.from({ length: 20 }, (_, i) => i + 1);
+
 export default function LivraisonPage() {
   const router = useRouter();
-  const { document, delivery, selectedInstitute, client, setDelivery } = useOrderStore();
+  const { document, delivery, selectedInstitute, client, copies, setDelivery, setCopies } = useOrderStore();
 
   const [selected, setSelected] = useState<DeliveryType>(delivery);
   const [institute, setInstitute] = useState<string | null>(selectedInstitute);
+  const [exemplaires, setExemplaires] = useState(copies);
   const [clientName, setClientName] = useState(client?.name ?? '');
   const [clientPhone, setClientPhone] = useState(client?.phone ?? '');
   const [error, setError] = useState('');
@@ -21,6 +24,10 @@ export default function LivraisonPage() {
   useEffect(() => {
     if (!document) router.replace('/');
   }, [document, router]);
+
+  useEffect(() => {
+    setExemplaires(copies);
+  }, [copies]);
 
   const handleSelect = (type: DeliveryType, inst?: string | null) => {
     setSelected(type);
@@ -53,6 +60,7 @@ export default function LivraisonPage() {
       return;
     }
 
+    setCopies(exemplaires);
     const clientInfo: ClientInfo = { name: clientName.trim(), phone: clientPhone.trim() };
     setDelivery(selected, institute, clientInfo);
     router.push('/recapitulatif');
@@ -72,6 +80,37 @@ export default function LivraisonPage() {
           </div>
           <p className="text-gray-500 text-sm">
             Choisissez votre mode de récupération et laissez vos coordonnées.
+          </p>
+        </div>
+
+        {/* Nombre d'exemplaires */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+          <h2 className="font-semibold text-gray-800 flex items-center gap-2 mb-4">
+            <Copy className="w-4 h-4 text-blue-600" />
+            Nombre d&apos;exemplaires
+          </h2>
+          <div className="flex items-center gap-3">
+            <label htmlFor="exemplaires" className="text-sm font-medium text-gray-700 whitespace-nowrap">
+              Je commande
+            </label>
+            <select
+              id="exemplaires"
+              value={exemplaires}
+              onChange={(e) => setExemplaires(Number(e.target.value))}
+              className={cn(
+                'flex-1 max-w-[120px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white'
+              )}
+            >
+              {EXEMPLAIRES_OPTIONS.map((n) => (
+                <option key={n} value={n}>
+                  {n} exemplaire{n > 1 ? 's' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Le montant total sera calculé en fonction du nombre d&apos;exemplaires.
           </p>
         </div>
 

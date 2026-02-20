@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       finishing: body.finishing ?? null,
       delivery: body.delivery ?? null,
       selectedInstitute: body.selectedInstitute ?? null,
+      copies: body.copies ?? 1,
       totalPrice: body.totalPrice ?? 0,
       status: 'pending',
       createdAt: new Date().toISOString(),
