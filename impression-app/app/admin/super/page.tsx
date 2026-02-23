@@ -273,7 +273,7 @@ export default function SuperAdminDashboard() {
               <span className="hidden sm:inline">Tableau Admin</span>
             </button>
             <button
-              onClick={fetchData}
+              onClick={() => fetchData()}
               title="Actualiser"
               className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             >

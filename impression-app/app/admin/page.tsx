@@ -275,7 +275,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
-                onClick={fetchData}
+                onClick={() => fetchData()}
                 disabled={loading}
                 title="Actualiser les commandes"
                 aria-label="Actualiser"
