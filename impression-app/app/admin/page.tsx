@@ -125,23 +125,41 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<OrderStatus | 'all'>('all');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [institutes, setInstitutes] = useState<{ id: string; name: string }[]>([]);
+  const [countdown, setCountdown] = useState(120);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
-      const ordRes = await fetch('/api/admin/orders');
+      const [ordRes, instRes] = await Promise.all([
+        fetch('/api/admin/orders'),
+        fetch('/api/institutes'),
+      ]);
       if (ordRes.ok) {
         setOrders(await ordRes.json());
         setLastUpdated(new Date());
       }
+      if (instRes.ok) setInstitutes(await instRes.json());
     } catch {
       showToast('Erreur lors du chargement', 'error');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [showToast]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Auto-refresh toutes les 2 minutes avec compteur
+  useEffect(() => {
+    let secs = 120;
+    setCountdown(120);
+    const tick = setInterval(() => {
+      secs -= 1;
+      if (secs <= 0) { secs = 120; fetchData(true); }
+      setCountdown(secs);
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [fetchData]);
 
   const hasActiveFilters = search.trim() !== '' || filterStatus !== 'all';
   const clearFilters = () => { setSearch(''); setFilterStatus('all'); };
@@ -247,11 +265,12 @@ export default function AdminDashboard() {
                     Super Admin
                   </Link>
                 </div>
-                {lastUpdated && (
-                  <p className="text-slate-400 text-xs mt-0.5 hidden sm:block">
-                    Dernière mise à jour : {lastUpdated.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                )}
+                <p className="text-slate-400 text-xs mt-0.5 hidden sm:block">
+                  {lastUpdated
+                    ? `Mis à jour à ${lastUpdated.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} · `
+                    : ''}
+                  Actualisation dans {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, '0')}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -483,6 +502,11 @@ export default function AdminDashboard() {
                         {/* Livraison */}
                         <td className="px-5 py-4 hidden lg:table-cell">
                           <span className="text-sm text-gray-600">{deliveryLabel(order.delivery)}</span>
+                          {order.delivery === 'partner' && order.selectedInstitute && (
+                            <p className="text-xs text-blue-600 mt-0.5">
+                              {institutes.find((i) => i.id === order.selectedInstitute)?.name ?? order.selectedInstitute}
+                            </p>
+                          )}
                         </td>
 
                         {/* Statut */}

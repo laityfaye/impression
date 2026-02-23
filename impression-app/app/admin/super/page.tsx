@@ -107,6 +107,8 @@ export default function SuperAdminDashboard() {
   const [confirmInstitute, setConfirmInstitute] = useState<string | null>(null);
   const [confirmOrder, setConfirmOrder] = useState<string | null>(null);
   const [platformUrl, setPlatformUrl] = useState('');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [countdown, setCountdown] = useState(120);
   const qrRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -122,23 +124,35 @@ export default function SuperAdminDashboard() {
     link.click();
   };
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const [instRes, ordRes] = await Promise.all([
         fetch('/api/admin/institutes'),
         fetch('/api/admin/orders'),
       ]);
       if (instRes.ok) setInstitutes(await instRes.json());
-      if (ordRes.ok) setOrders(await ordRes.json());
+      if (ordRes.ok) { setOrders(await ordRes.json()); setLastUpdated(new Date()); }
     } catch {
       showToast('Erreur lors du chargement', 'error');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [showToast]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Auto-refresh toutes les 2 minutes avec compteur
+  useEffect(() => {
+    let secs = 120;
+    setCountdown(120);
+    const tick = setInterval(() => {
+      secs -= 1;
+      if (secs <= 0) { secs = 120; fetchData(true); }
+      setCountdown(secs);
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [fetchData]);
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -242,7 +256,11 @@ export default function SuperAdminDashboard() {
                   Super Admin
                 </span>
               </div>
-              <span className="text-purple-300 text-xs hidden sm:block">Tableau de bord Super Administrateur</span>
+              <p className="text-purple-300 text-xs hidden sm:block">
+                Tableau de bord Super Administrateur
+                {lastUpdated && ` · Mis à jour à ${lastUpdated.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
+                {` · Actualisation dans ${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')}`}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -523,6 +541,11 @@ export default function SuperAdminDashboard() {
                         </td>
                         <td className="px-4 py-4 hidden lg:table-cell">
                           <span className="text-sm text-gray-600">{deliveryLabel(order.delivery)}</span>
+                          {order.delivery === 'partner' && order.selectedInstitute && (
+                            <p className="text-xs text-blue-600 mt-0.5">
+                              {institutes.find((i) => i.id === order.selectedInstitute)?.name ?? order.selectedInstitute}
+                            </p>
+                          )}
                         </td>
                         <td className="px-4 py-4">
                           <span className={`text-xs font-semibold px-2 py-1 rounded-full ${st.cls}`}>{st.label}</span>
