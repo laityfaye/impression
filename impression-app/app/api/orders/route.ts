@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
       copies: body.copies ?? 1,
       totalPrice: body.totalPrice ?? 0,
       status: 'pending',
+      assignedTo: null,
       createdAt: new Date().toISOString(),
     };
 
