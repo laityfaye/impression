@@ -155,6 +155,13 @@ export default function AdminDashboard() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  // Rediriger le super admin vers son tableau de bord
+  useEffect(() => {
+    if (adminRole === 'superadmin') {
+      router.replace('/admin/super');
+    }
+  }, [adminRole, router]);
+
   // Auto-refresh toutes les 2 minutes avec compteur
   useEffect(() => {
     let secs = 120;
