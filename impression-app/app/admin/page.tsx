@@ -127,19 +127,25 @@ export default function AdminDashboard() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [institutes, setInstitutes] = useState<{ id: string; name: string }[]>([]);
   const [countdown, setCountdown] = useState(120);
+  const [adminRole, setAdminRole] = useState<'admin1' | 'admin2' | 'superadmin' | null>(null);
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const [ordRes, instRes] = await Promise.all([
+      const [ordRes, instRes, meRes] = await Promise.all([
         fetch('/api/admin/orders'),
         fetch('/api/institutes'),
+        fetch('/api/admin/me'),
       ]);
       if (ordRes.ok) {
         setOrders(await ordRes.json());
         setLastUpdated(new Date());
       }
       if (instRes.ok) setInstitutes(await instRes.json());
+      if (meRes.ok) {
+        const me = await meRes.json();
+        setAdminRole(me.role);
+      }
     } catch {
       showToast('Erreur lors du chargement', 'error');
     } finally {
@@ -254,16 +260,18 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-lg tracking-tight text-white">Tableau de bord</span>
                   <span className="text-xs font-semibold bg-indigo-500/80 text-indigo-100 px-2.5 py-1 rounded-full border border-indigo-400/30">
-                    Admin
+                    {adminRole === 'admin2' ? 'Admin 2' : 'Admin 1'}
                   </span>
-                  <Link
-                    href="/admin/super"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-colors"
-                    title="Super Admin"
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Super Admin
-                  </Link>
+                  {adminRole === 'superadmin' && (
+                    <Link
+                      href="/admin/super"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-colors"
+                      title="Super Admin"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      Super Admin
+                    </Link>
+                  )}
                 </div>
                 <p className="text-slate-400 text-xs mt-0.5 hidden sm:block">
                   {lastUpdated
@@ -396,8 +404,8 @@ export default function AdminDashboard() {
           ) : filteredOrders.length === 0 ? (
             <EmptyState
               icon={<ShoppingBag className="w-10 h-10 text-gray-200" />}
-              title={orders.length === 0 ? 'Aucune commande' : 'Aucun résultat'}
-              subtitle={orders.length === 0 ? 'Les commandes apparaîtront ici.' : 'Essayez de modifier vos filtres.'}
+              title={orders.length === 0 ? 'Aucune commande affectée' : 'Aucun résultat'}
+              subtitle={orders.length === 0 ? 'Le Super Admin vous affectera des commandes.' : 'Essayez de modifier vos filtres.'}
             />
           ) : (
             <div className="overflow-x-auto overflow-y-visible">

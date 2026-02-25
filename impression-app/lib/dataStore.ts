@@ -54,6 +54,7 @@ export function saveInstitutes(institutes: Institute[]): void {
 // ── Orders ────────────────────────────────────────────────────────────────────
 
 export type OrderStatus = 'pending' | 'processing' | 'ready' | 'delivered';
+export type AdminRole = 'admin1' | 'admin2' | 'superadmin';
 
 export interface StoredOrder {
   id: string;
@@ -72,6 +73,7 @@ export interface StoredOrder {
   copies?: number;
   totalPrice: number;
   status: OrderStatus;
+  assignedTo: 'admin1' | 'admin2' | null;
   createdAt: string;
 }
 

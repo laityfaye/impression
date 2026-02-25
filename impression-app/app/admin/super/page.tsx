@@ -42,6 +42,7 @@ interface StoredOrder {
   copies?: number;
   totalPrice: number;
   status: string;
+  assignedTo: 'admin1' | 'admin2' | null;
   createdAt: string;
 }
 
@@ -106,6 +107,7 @@ export default function SuperAdminDashboard() {
   const [deletingOrder, setDeletingOrder] = useState<string | null>(null);
   const [confirmInstitute, setConfirmInstitute] = useState<string | null>(null);
   const [confirmOrder, setConfirmOrder] = useState<string | null>(null);
+  const [assigningOrder, setAssigningOrder] = useState<string | null>(null);
   const [platformUrl, setPlatformUrl] = useState('');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(120);
@@ -200,6 +202,31 @@ export default function SuperAdminDashboard() {
       showToast('Erreur réseau', 'error');
     } finally {
       setDeletingInstitute(null);
+    }
+  };
+
+  const handleAssignOrder = async (orderId: string, assignedTo: 'admin1' | 'admin2' | null) => {
+    setAssigningOrder(orderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assignedTo }),
+      });
+      if (res.ok) {
+        const label = assignedTo === 'admin1' ? 'Admin 1' : assignedTo === 'admin2' ? 'Admin 2' : 'retiré';
+        setOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, assignedTo } : o))
+        );
+        showToast(`Commande affectée à ${label}`);
+      } else {
+        const data = await res.json();
+        showToast(data.error ?? "Erreur lors de l'affectation", 'error');
+      }
+    } catch {
+      showToast('Erreur réseau', 'error');
+    } finally {
+      setAssigningOrder(null);
     }
   };
 
@@ -456,8 +483,13 @@ export default function SuperAdminDashboard() {
                 <ShoppingBag className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <h2 className="font-bold text-gray-900">Commandes</h2>
-                <p className="text-xs text-gray-500">{orders.length} commande{orders.length !== 1 ? 's' : ''}</p>
+                <h2 className="font-bold text-gray-900">Commandes reçues</h2>
+                <p className="text-xs text-gray-500">
+                  {orders.length} commande{orders.length !== 1 ? 's' : ''} ·{' '}
+                  <span className="text-amber-600 font-medium">
+                    {orders.filter((o) => !o.assignedTo).length} non affectée{orders.filter((o) => !o.assignedTo).length !== 1 ? 's' : ''}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
@@ -478,6 +510,7 @@ export default function SuperAdminDashboard() {
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase hidden lg:table-cell">Finition</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase hidden lg:table-cell">Livraison</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Statut</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Affecté à</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Montant</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase hidden sm:table-cell">Date</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Action</th>
@@ -486,8 +519,9 @@ export default function SuperAdminDashboard() {
                 <tbody className="divide-y divide-gray-50">
                   {orders.map((order) => {
                     const st = STATUS_MAP[order.status] ?? STATUS_MAP.pending;
+                    const isAssigning = assigningOrder === order.id;
                     return (
-                      <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={order.id} className={`hover:bg-gray-50/50 transition-colors ${!order.assignedTo ? 'bg-amber-50/40' : ''}`}>
                         <td className="px-4 py-4">
                           <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg">#{order.orderNumber}</span>
                         </td>
@@ -550,6 +584,54 @@ export default function SuperAdminDashboard() {
                         <td className="px-4 py-4">
                           <span className={`text-xs font-semibold px-2 py-1 rounded-full ${st.cls}`}>{st.label}</span>
                         </td>
+
+                        {/* Affectation */}
+                        <td className="px-4 py-4 min-w-[160px]">
+                          {order.assignedTo ? (
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                order.assignedTo === 'admin1'
+                                  ? 'bg-indigo-100 text-indigo-700'
+                                  : 'bg-teal-100 text-teal-700'
+                              }`}>
+                                {order.assignedTo === 'admin1' ? 'Admin 1' : 'Admin 2'}
+                              </span>
+                              <button
+                                onClick={() => handleAssignOrder(order.id, null)}
+                                disabled={isAssigning}
+                                title="Retirer l'affectation"
+                                className="p-1 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                              >
+                                {isAssigning ? <Loader2 className="w-3 h-3 animate-spin" /> : <X className="w-3 h-3" />}
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                Non affectée
+                              </span>
+                              <div className="flex gap-1 ml-1">
+                                <button
+                                  onClick={() => handleAssignOrder(order.id, 'admin1')}
+                                  disabled={isAssigning}
+                                  className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+                                  title="Affecter à Admin 1"
+                                >
+                                  {isAssigning ? <Loader2 className="w-3 h-3 animate-spin" /> : 'A1'}
+                                </button>
+                                <button
+                                  onClick={() => handleAssignOrder(order.id, 'admin2')}
+                                  disabled={isAssigning}
+                                  className="px-2 py-1 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+                                  title="Affecter à Admin 2"
+                                >
+                                  {isAssigning ? <Loader2 className="w-3 h-3 animate-spin" /> : 'A2'}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+
                         <td className="px-4 py-4 text-right">
                           <span className="text-sm font-bold text-gray-900 whitespace-nowrap">{formatPrice(order.totalPrice)}</span>
                         </td>
